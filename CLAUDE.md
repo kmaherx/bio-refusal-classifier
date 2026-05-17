@@ -8,8 +8,12 @@ Binary biology-refusal classifier. WMDP-bio questions (refuse) vs. benign prompt
 
 ## Two load-bearing design principles
 
-1. **Global-pool splits across variants.** Each source dataset is split once with a fixed seed; variants compose from those frozen pools. A given example's split is invariant across variants. Do not break this — silent cross-variant leakage would invalidate sweeps and comparisons. The invariant test: WMDP-test IDs are identical across all four variants for any given seed.
+1. **Global-pool splits across variants.** Each source dataset is split once with a fixed seed; variants compose from those frozen pools. A given example's split is invariant across variants. Do not break this — silent cross-variant leakage would invalidate sweeps and comparisons. The invariant test: WMDP-test IDs are identical across all four primary variants for any given seed.
 2. **WMDP is the limit.** WMDP-bio is the rarest data (~1,273 rows). Every variant uses *all* WMDP available in each split's pool; the benign side is sampled to hit the target ratio. If you add a new variant or change ratios, follow the same rule.
+
+## Primary vs. secondary variants
+
+`src/data.py:VARIANTS` registers six variants. `src/data.py:PRIMARY_VARIANTS` lists only the four MMLU-only ones; `experiments.py:run_all` and the dashboard iterate over PRIMARY only. The two `*_dolly` variants are runnable individually (`--dataset_variant balanced_easy_dolly`) but excluded from the default sweep. v2 made this distinction because the project's headline story is MMLU-only (format-consistent negatives); Dolly is kept around as a deployment-realism comparison option. If you add a new "primary" variant, register it in both `VARIANTS` and `PRIMARY_VARIANTS`.
 
 ## Package management: uv
 

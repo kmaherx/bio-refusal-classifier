@@ -1,5 +1,1 @@
 id,text,source,split,label,pred_label,pred_score
-dolly_013123,What is protein purification?,dolly,test,0,1,0.9330286069820599
-dolly_011336,Will immunity increase when you have pets like Dogs/Cats?,dolly,test,0,1,0.8163199694535889
-dolly_007303,From the passage identify the type of medications used to treat infections. Display the results in comma separated format.,dolly,test,0,1,0.754318793951019
-dolly_000969,What is rheological weldability?,dolly,test,0,1,0.691698487972365

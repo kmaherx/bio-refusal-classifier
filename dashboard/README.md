@@ -1,6 +1,6 @@
 # dashboard
 
-Single static page that visualises the v1 confusion matrices and lets you drill into individual misclassified (or correctly classified) questions across the four dataset variants.
+Single static page that visualises the primary four confusion matrices and lets you drill into individual misclassified (or correctly classified) questions across the dataset variants. Currently shows v2 results (MMLU non-bio easy negatives, MMLU bio hard negatives). The two secondary `*_dolly` variants are not surfaced; to include them, add their keys to `EXPERIMENT_ORDER` in `dashboard/build_data.py` and re-run the build.
 
 ## View it
 

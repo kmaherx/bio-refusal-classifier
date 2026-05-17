@@ -40,21 +40,21 @@ DISPLAY_NAMES = {
 }
 EXPERIMENT_ORDER = ["balanced_easy", "imbalanced_easy", "balanced_hard", "imbalanced_hard"]
 
-# MMLU IDs look like `mmlu_bio_<subject>_<split>_<idx>` where <subject> can
-# itself contain underscores (e.g. high_school_biology). Pattern: strip the
-# leading prefix, then peel off the last two tokens (split + idx).
-_MMLU_PREFIX = "mmlu_bio_"
+# MMLU IDs look like `mmlu_bio_<subject>_<split>_<idx>` or
+# `mmlu_other_<subject>_<split>_<idx>`. <subject> can itself contain
+# underscores (e.g. high_school_biology). Pattern: strip the leading
+# source prefix, then peel off the trailing split+idx tokens.
+_MMLU_PREFIXES = ("mmlu_bio_", "mmlu_other_")
 _MMLU_TAIL = re.compile(r"_(?:validation|test)_\d+$")
 
 
 def parse_mmlu_subject(qid: str) -> str | None:
-    if not qid.startswith(_MMLU_PREFIX):
-        return None
-    rest = qid[len(_MMLU_PREFIX) :]
-    m = _MMLU_TAIL.search(rest)
-    if not m:
-        return rest
-    return rest[: m.start()]
+    for prefix in _MMLU_PREFIXES:
+        if qid.startswith(prefix):
+            rest = qid[len(prefix) :]
+            m = _MMLU_TAIL.search(rest)
+            return rest[: m.start()] if m else rest
+    return None
 
 
 def make_summary(source: str, subject: str | None, text: str, max_words: int = 10) -> str:
@@ -110,7 +110,7 @@ def build_experiment(
         qid = row["id"]
         if qid not in questions:
             source = row["source_dataset"]
-            subject = parse_mmlu_subject(qid) if source == "mmlu_bio" else None
+            subject = parse_mmlu_subject(qid) if source.startswith("mmlu_") else None
             text = row["text"]
             cached = summaries.get(qid)
             if cached and cached.get("text") == text:
