@@ -54,7 +54,8 @@ Reserved for follow-ups, not for trivial one-offs: fixing a bug, reframing a def
 
 - **New classifier type:** add a class implementing the `Classifier` protocol in `src/models.py`, then extend `build_classifier(cfg)` in the same file.
 - **New variant or source:** add a `load_*` function and `_LOADERS` entry in `src/data.py`, plus an entry in `VARIANTS`. The global-pool split routine and `build_variant` will pick it up automatically.
-- **New evaluation slice:** extend `_per_split_metrics` and the artifact writers in `src/evaluate.py`. Keep the existing artifact filenames stable — downstream consumers (PROGRESS.md updates, comparison tables) depend on them.
+- **New evaluation slice:** extend `_per_split_metrics` and the artifact writers in `src/evaluate.py`. Keep the existing artifact filenames stable — downstream consumers (PROGRESS.md updates, comparison tables, the dashboard) depend on them.
+- **Dashboard:** `dashboard/` is a static HTML+JS visualisation of the confusion matrices, fed by `dashboard/data.js` (generated from `outputs/<variant>__*/predictions.csv` + `metrics.json` by `dashboard/build_data.py`). Rebuild after every `--all` run: `uv run python dashboard/build_data.py`. Per-question heuristic summaries persist in `outputs/question_summaries.json` so reruns are deterministic.
 
 ## Output artifact contract (do not break)
 

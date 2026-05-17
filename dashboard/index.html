@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>bio-refusal-classifier · confusion-matrix dashboard</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="page-header">
+      <h1>bio-refusal-classifier</h1>
+      <p class="subtitle">v1 confusion-matrix dashboard · test set · MiniLM-L6-v2 + LR · seed 42</p>
+    </header>
+
+    <main class="app">
+      <section class="panel panel-left" aria-labelledby="matrix-heading">
+        <div class="toggles" role="tablist" aria-label="Experiment selector"></div>
+
+        <div class="matrix-wrap">
+          <h2 id="matrix-heading" class="panel-heading">Confusion matrix</h2>
+          <div class="headline" aria-live="polite"></div>
+          <div class="matrix" role="grid" aria-label="Click a cell to view its questions"></div>
+          <p class="hint">Click any cell to load its questions in the middle panel.</p>
+        </div>
+      </section>
+
+      <section class="panel panel-mid" aria-labelledby="list-heading">
+        <h2 id="list-heading" class="panel-heading">Questions</h2>
+        <input
+          type="search"
+          class="filter"
+          placeholder="Filter by substring (case-insensitive)…"
+          aria-label="Filter questions"
+        />
+        <p class="list-meta" aria-live="polite"></p>
+        <ul class="qlist" role="listbox" aria-label="Questions in the selected cell"></ul>
+      </section>
+
+      <section class="panel panel-right" aria-labelledby="detail-heading">
+        <h2 id="detail-heading" class="panel-heading">Question</h2>
+        <div class="detail" aria-live="polite"></div>
+      </section>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -4,12 +4,13 @@ Living document. Update after every experiment.
 
 ## Status
 
-V1 baseline complete. All four variants run end-to-end, cross-variant WMDP-test invariance verified (128 IDs identical across runs). MiniLM-L6-v2 + LR achieves 0.98 on `balanced_easy` and drops to ~0.95 on `balanced_hard` — the hard MMLU bio negatives meaningfully challenge the classifier, which is the test the variant set was designed for. Next: take-home write-up.
+V1 baseline complete. All four variants run end-to-end, cross-variant WMDP-test invariance verified (128 IDs identical across runs). MiniLM-L6-v2 + LR achieves 0.98 on `balanced_easy` and drops to ~0.95 on `balanced_hard` — the hard MMLU bio negatives meaningfully challenge the classifier, which is the test the variant set was designed for. Static dashboard for browsing failure cases lives on `feature/dashboard` (open `dashboard/index.html` in a browser; rebuild data with `uv run python dashboard/build_data.py`). Next: take-home write-up.
 
 ## Open TODOs
 
 - [x] Run all four variants end-to-end (`uv run python scripts/run_experiment.py --all`).
 - [x] Record results below in **Experiment log**.
+- [x] Confusion-matrix dashboard for failure-mode exploration (on `feature/dashboard`).
 - [ ] Write the ½–1 page take-home write-up (data choices, modeling, results, what's next with more time).
 - [ ] (Future) TF-IDF + LR baseline as a cheap second classifier — would expose whether the embedding model is doing real semantic work beyond surface tokens.
 - [ ] (Future) Fine-tuned DistilBERT for comparison.
