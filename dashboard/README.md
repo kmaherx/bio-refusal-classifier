@@ -6,30 +6,40 @@ Single static page that visualises the v1 confusion matrices and lets you drill 
 
 Open `dashboard/index.html` directly in a browser. No server required (works from `file://`).
 
-## Rebuild the data
+## Rebuild
 
 ```bash
 uv run python dashboard/build_data.py
 ```
 
-Reads `outputs/<variant>__*/predictions.csv` + `metrics.json` for each of the four variants, writes:
+Reads `outputs/<variant>__*/predictions.csv` + `metrics.json` for each of the four variants, then assembles a fully self-contained `dashboard/index.html` by inlining `template.html`, `styles.css`, and `app.js` together with the data blob.
 
-- `dashboard/data.js` — `window.DASHBOARD_DATA = {...}` blob loaded by `index.html`.
+Outputs:
+
+- `dashboard/index.html` — self-contained (HTML + inlined CSS + inlined JS + inlined data). The only file a reviewer needs to open. Generated; do not hand-edit.
 - `outputs/question_summaries.json` — per-question heuristic summaries, persisted so the script is idempotent.
 
-Both files are checked in so reviewers can open `index.html` without running anything.
+Both are checked in so reviewers don't need to re-run the build.
 
 ## Files
 
 ```
 dashboard/
-  index.html        # hand-written; layout scaffolding
-  styles.css        # responsive layout (3-col desktop ≥768px, 1-col mobile)
-  app.js            # state + render + click handlers; reads window.DASHBOARD_DATA
-  build_data.py     # generator (Python; reads outputs/, writes data.js + summaries)
-  data.js           # generated; do not hand-edit
+  index.html        # GENERATED — open this in a browser
+  template.html     # source: HTML scaffold with __STYLES__/__DATA__/__APP__ placeholders
+  styles.css        # source: responsive layout (3-col desktop ≥768px, 1-col mobile)
+  app.js            # source: state + render + click handlers
+  build_data.py     # generator (Python; reads outputs/, writes index.html + summaries)
   README.md         # this file
 ```
+
+To make changes to the dashboard:
+
+1. Edit `template.html`, `styles.css`, and/or `app.js`.
+2. Run `uv run python dashboard/build_data.py` to regenerate `index.html`.
+3. Reload the page in your browser.
+
+The self-contained `index.html` is the file you ship to reviewers; the three source files exist for maintainability.
 
 ## UI
 
