@@ -5,9 +5,9 @@ from __future__ import annotations
 from typing import Any
 
 from .config import ExperimentConfig
-from .data import VARIANT_NAMES
+from .data import PRIMARY_VARIANTS, VARIANT_NAMES
 
-__all__ = ["VARIANT_NAMES", "make_config", "run_all"]
+__all__ = ["VARIANT_NAMES", "PRIMARY_VARIANTS", "make_config", "run_all"]
 
 
 def make_config(variant: str, overrides: dict[str, Any] | None = None) -> ExperimentConfig:
@@ -17,7 +17,10 @@ def make_config(variant: str, overrides: dict[str, Any] | None = None) -> Experi
 
 
 def run_all(base_overrides: dict[str, Any] | None = None) -> dict[str, dict]:
-    """Run all four variants in order and print a comparison table.
+    """Run the four primary variants in order and print a comparison table.
+
+    Skips the secondary (Dolly) variants — they're available via
+    ``--dataset_variant <name>`` but not part of the default sweep.
 
     Returns ``{variant: metrics}``.
     """
@@ -27,7 +30,7 @@ def run_all(base_overrides: dict[str, Any] | None = None) -> dict[str, dict]:
     base_overrides.pop("dataset_variant", None)  # don't let caller pin this
 
     results: dict[str, dict] = {}
-    for variant in VARIANT_NAMES:
+    for variant in PRIMARY_VARIANTS:
         cfg = make_config(variant, base_overrides)
         model, splits = train.run(cfg)
         metrics = evaluate.run(model, splits, cfg)

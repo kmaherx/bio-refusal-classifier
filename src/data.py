@@ -16,6 +16,16 @@ Two design principles drive this module:
    ratio is dictated by data availability. The realized refuse fraction is
    always recorded.
 
+Negative sources for the **primary** variants are both drawn from MMLU so the
+easy/hard contrast is purely topical (non-bio vs. bio); refuse and benign
+share the same stripped-MCQ format. This is intentional methodological
+control — see ``plans/002_swap_dolly_for_mmlu_non_bio.md`` for the trade-off
+discussion.
+
+Dolly is **maintained but secondary**: the loader and a pair of Dolly-easy
+variants are present so anyone can compare against open-ended instruction
+negatives, but they are excluded from the default ``--all`` sweep.
+
 Future seams: ``load_source(name)`` and ``VARIANTS`` are the natural extension
 points — add new sources (synthetic trajectories, activation tensors) and new
 variant entries here.
@@ -28,7 +38,7 @@ import random
 from pathlib import Path
 
 import pandas as pd
-from datasets import load_dataset
+from datasets import get_dataset_config_names, load_dataset
 
 from .utils import ensure_dir, load_json, save_json
 
@@ -38,8 +48,9 @@ logger = logging.getLogger(__name__)
 # --- source dataset names ----------------------------------------------------
 
 SOURCE_WMDP = "wmdp"
-SOURCE_DOLLY = "dolly"
-SOURCE_MMLU = "mmlu_bio"
+SOURCE_MMLU_BIO = "mmlu_bio"
+SOURCE_MMLU_OTHER = "mmlu_other"
+SOURCE_DOLLY = "dolly"  # secondary; kept for legacy comparison
 
 MMLU_BIO_SUBJECTS: list[str] = [
     "high_school_biology",
@@ -52,6 +63,26 @@ MMLU_BIO_SUBJECTS: list[str] = [
     "professional_medicine",
     "nutrition",
 ]
+
+# Aggregate configs in cais/mmlu we never want as subject pools.
+_MMLU_AGGREGATE_CONFIGS = {"all", "auxiliary_train"}
+
+_mmlu_other_subjects_cache: list[str] | None = None
+
+
+def mmlu_other_subjects() -> list[str]:
+    """All MMLU subjects except the 9 we use as hard negatives.
+
+    Computed once per process from ``cais/mmlu``'s config list, with the
+    aggregate ``all`` / ``auxiliary_train`` entries removed.
+    """
+    global _mmlu_other_subjects_cache
+    if _mmlu_other_subjects_cache is None:
+        all_configs = set(get_dataset_config_names("cais/mmlu"))
+        _mmlu_other_subjects_cache = sorted(
+            all_configs - set(MMLU_BIO_SUBJECTS) - _MMLU_AGGREGATE_CONFIGS
+        )
+    return _mmlu_other_subjects_cache
 
 
 # --- loaders -----------------------------------------------------------------
@@ -76,28 +107,18 @@ def load_wmdp_bio() -> pd.DataFrame:
     return pd.DataFrame(rows)
 
 
-def load_dolly() -> pd.DataFrame:
-    """Load Dolly-15k instructions (instruction field only)."""
-    d = load_dataset("databricks/databricks-dolly-15k")["train"]
-    rows = []
-    for i, ex in enumerate(d):
-        text = _clean(ex["instruction"])
-        if text:
-            rows.append({"id": f"{SOURCE_DOLLY}_{i:06d}", "text": text, "source": SOURCE_DOLLY})
-    return pd.DataFrame(rows)
+def _load_mmlu_subjects(subjects: list[str], source_name: str) -> pd.DataFrame:
+    """Shared loader for any subset of MMLU subjects.
 
+    Combines each subject's ``validation`` + ``test`` splits into a single
+    pool. ``dev`` (5 rows per subject) is skipped — it's used elsewhere for
+    in-context prompting and adds noise here.
 
-def load_mmlu_bio() -> pd.DataFrame:
-    """Load MMLU bio/medical subjects' questions only (choices dropped).
-
-    Combines the 9 subjects' ``validation`` + ``test`` splits into a single pool.
-    The ``dev`` split (5 rows per subject) is skipped because it's tiny and used
-    by other workflows for in-context prompting.
-
-    IDs encode subject so future stratified splits can stay subject-balanced.
+    IDs encode subject and origin split so future stratified splits can stay
+    subject-balanced and so the dashboard can show subject in the badge.
     """
     rows = []
-    for subj in MMLU_BIO_SUBJECTS:
+    for subj in subjects:
         d = load_dataset("cais/mmlu", subj)
         for split_name in ("validation", "test"):
             if split_name not in d:
@@ -108,18 +129,50 @@ def load_mmlu_bio() -> pd.DataFrame:
                     continue
                 rows.append(
                     {
-                        "id": f"{SOURCE_MMLU}_{subj}_{split_name}_{i:04d}",
+                        "id": f"{source_name}_{subj}_{split_name}_{i:04d}",
                         "text": text,
-                        "source": SOURCE_MMLU,
+                        "source": source_name,
                     }
                 )
     return pd.DataFrame(rows)
 
 
+def load_mmlu_bio() -> pd.DataFrame:
+    """Hard-negative source: 9 bio/medical MMLU subjects, questions only."""
+    return _load_mmlu_subjects(MMLU_BIO_SUBJECTS, SOURCE_MMLU_BIO)
+
+
+def load_mmlu_other() -> pd.DataFrame:
+    """Easy-negative source: every MMLU subject except the 9 bio/medical ones.
+
+    Same stripped-MCQ format as WMDP and MMLU bio — easy vs. hard becomes a
+    pure topical contrast, with format held constant. See module docstring.
+    """
+    return _load_mmlu_subjects(mmlu_other_subjects(), SOURCE_MMLU_OTHER)
+
+
+def load_dolly() -> pd.DataFrame:
+    """Secondary easy-negative source: Dolly-15k instructions.
+
+    Open-ended user-style instructions (different format from WMDP/MMLU). Kept
+    available for comparison against the primary MMLU-non-bio negatives but
+    not part of the default ``--all`` sweep — see the ``LEGACY_DOLLY_VARIANTS``
+    note below.
+    """
+    d = load_dataset("databricks/databricks-dolly-15k")["train"]
+    rows = []
+    for i, ex in enumerate(d):
+        text = _clean(ex["instruction"])
+        if text:
+            rows.append({"id": f"{SOURCE_DOLLY}_{i:06d}", "text": text, "source": SOURCE_DOLLY})
+    return pd.DataFrame(rows)
+
+
 _LOADERS = {
     SOURCE_WMDP: load_wmdp_bio,
+    SOURCE_MMLU_BIO: load_mmlu_bio,
+    SOURCE_MMLU_OTHER: load_mmlu_other,
     SOURCE_DOLLY: load_dolly,
-    SOURCE_MMLU: load_mmlu_bio,
 }
 
 
@@ -205,14 +258,28 @@ def get_global_splits(
 # source (e.g. MMLU bio) is the limit and we'd rather take the full pool than
 # downsample.
 VARIANTS: dict[str, tuple[str, str, float | None]] = {
-    "balanced_easy": (SOURCE_WMDP, SOURCE_DOLLY, 0.5),
-    "imbalanced_easy": (SOURCE_WMDP, SOURCE_DOLLY, 0.1),
-    "balanced_hard": (SOURCE_WMDP, SOURCE_MMLU, 0.5),
+    # --- primary (MMLU-only) ---
+    "balanced_easy": (SOURCE_WMDP, SOURCE_MMLU_OTHER, 0.5),
+    "imbalanced_easy": (SOURCE_WMDP, SOURCE_MMLU_OTHER, 0.1),
+    "balanced_hard": (SOURCE_WMDP, SOURCE_MMLU_BIO, 0.5),
     # Use all MMLU bio; realized ratio is ~0.38 against WMDP (data quality > target ratio).
-    "imbalanced_hard": (SOURCE_WMDP, SOURCE_MMLU, None),
+    "imbalanced_hard": (SOURCE_WMDP, SOURCE_MMLU_BIO, None),
+    # --- secondary (Dolly easy negatives) ---
+    # Available via `--dataset_variant <name>` but excluded from `--all`.
+    "balanced_easy_dolly": (SOURCE_WMDP, SOURCE_DOLLY, 0.5),
+    "imbalanced_easy_dolly": (SOURCE_WMDP, SOURCE_DOLLY, 0.1),
 }
 
 VARIANT_NAMES = list(VARIANTS)
+
+# `--all` only sweeps these. Dolly variants are runnable individually but the
+# default story is MMLU-only — see plans/002_swap_dolly_for_mmlu_non_bio.md.
+PRIMARY_VARIANTS = [
+    "balanced_easy",
+    "imbalanced_easy",
+    "balanced_hard",
+    "imbalanced_hard",
+]
 
 
 def _derived_rng(seed: int, variant: str, split: str) -> random.Random:

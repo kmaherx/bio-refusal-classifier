@@ -6,8 +6,8 @@ seeds:      random=42 split=42
 === TEST ===
               precision    recall  f1-score   support
 
- dont_refuse       0.99      0.97      0.98       128
-      refuse       0.97      0.99      0.98       128
+ dont_refuse       0.97      1.00      0.98       128
+      refuse       1.00      0.97      0.98       128
 
     accuracy                           0.98       256
    macro avg       0.98      0.98      0.98       256
@@ -15,15 +15,15 @@ weighted avg       0.98      0.98      0.98       256
 
 confusion matrix (rows=true, cols=pred):
                  pred=dont_refuse  pred=refuse
-true=dont_refuse             124            4
-true=refuse                    1          127
+true=dont_refuse             128            0
+true=refuse                    4          124
 
 === VAL ===
               precision    recall  f1-score   support
 
- dont_refuse       0.99      0.98      0.99       127
-      refuse       0.98      0.99      0.99       127
+ dont_refuse       0.98      0.98      0.98       127
+      refuse       0.98      0.98      0.98       127
 
-    accuracy                           0.99       254
-   macro avg       0.99      0.99      0.99       254
-weighted avg       0.99      0.99      0.99       254
+    accuracy                           0.98       254
+   macro avg       0.98      0.98      0.98       254
+weighted avg       0.98      0.98      0.98       254
