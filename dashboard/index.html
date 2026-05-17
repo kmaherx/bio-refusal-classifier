@@ -355,7 +355,7 @@ body {
     </header>
 
     <main class="app">
-      <section class="panel panel-left" aria-labelledby="matrix-heading">
+      <section class="panel" aria-labelledby="matrix-heading">
         <div class="toggles" role="tablist" aria-label="Experiment selector"></div>
 
         <div class="matrix-wrap">
@@ -366,7 +366,7 @@ body {
         </div>
       </section>
 
-      <section class="panel panel-mid" aria-labelledby="list-heading">
+      <section class="panel" aria-labelledby="list-heading">
         <h2 id="list-heading" class="panel-heading">Questions</h2>
         <input
           type="search"
@@ -378,7 +378,7 @@ body {
         <ul class="qlist" role="listbox" aria-label="Questions in the selected cell"></ul>
       </section>
 
-      <section class="panel panel-right" aria-labelledby="detail-heading">
+      <section class="panel" aria-labelledby="detail-heading">
         <h2 id="detail-heading" class="panel-heading">Question</h2>
         <div class="detail" aria-live="polite"></div>
       </section>
@@ -558,7 +558,6 @@ window.DASHBOARD_DATA = {"experiments":[{"key":"balanced_easy","display":"Balanc
       btn.type = "button";
       if (it.id === state.selectedQuestionId) btn.classList.add("selected");
       const summary = document.createElement("span");
-      summary.className = "qsummary";
       summary.textContent = q.summary;
       const score = document.createElement("span");
       score.className = "qscore";

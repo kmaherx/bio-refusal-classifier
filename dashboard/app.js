@@ -168,7 +168,6 @@
       btn.type = "button";
       if (it.id === state.selectedQuestionId) btn.classList.add("selected");
       const summary = document.createElement("span");
-      summary.className = "qsummary";
       summary.textContent = q.summary;
       const score = document.createElement("span");
       score.className = "qscore";

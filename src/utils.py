@@ -3,8 +3,6 @@ from __future__ import annotations
 import json
 import os
 import random
-import time
-from contextlib import contextmanager
 from pathlib import Path
 from typing import Any
 
@@ -55,10 +53,3 @@ def get_device() -> str:
         return "cuda" if torch.cuda.is_available() else "cpu"
     except ImportError:
         return "cpu"
-
-
-@contextmanager
-def timer(label: str):
-    t0 = time.perf_counter()
-    yield
-    print(f"[timer] {label}: {time.perf_counter() - t0:.2f}s")
