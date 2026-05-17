@@ -12,7 +12,7 @@ V2 complete: easy-negative source swapped from Dolly to MMLU non-bio (48 subject
 - [x] Record results below in **Experiment log**.
 - [x] Confusion-matrix dashboard for failure-mode exploration (merged from `feature/dashboard`).
 - [x] Swap Dolly for MMLU non-bio as primary easy negative; keep Dolly secondary (merged from `feature/mmlu-easy`).
-- [ ] Write the ½–1 page take-home write-up (data choices, modeling, results, what's next with more time).
+- [x] Write the ½–1 page take-home write-up (at [`writeup.txt`](writeup.txt) — data choices, modeling, results, what's next).
 - [ ] (Future) Re-run the two `*_dolly` variants and add them as optional toggles in the dashboard.
 - [ ] (Future) TF-IDF + LR baseline as a cheap second classifier — would expose whether the embedding model is doing real semantic work beyond surface tokens.
 - [ ] (Future) Fine-tuned DistilBERT for comparison.

@@ -1,0 +1,36 @@
+Data choices:
+- I chose to use two benign data sources: MMLU non bio for easy negatives and MMLU-bio for hard negatives. Easy and hard negatives were intended to give a broad sense of performance across task difficulties.
+- WMDP formatting is inspired by MMLU, so I chose MMLU-based negatives specifically for consistency. I felt this was cleanest for a v1 where we want to cleanly compare things like data im/balance, though it introduces bias toward a particular format.
+- I chose to compare balanced vs unbalanced conditions to test how balance affects performance, since I figure this is a critical part of working with production systems.
+- I was also worried about data leakage across different experiments, so I did a global split to make sure test (val) data is only ever test (val) data across all experiments.
+- For the imbalanced_hard condition, I prioritized using all WMDP-bio data available rather than maximizing imbalance, since the quality data is rare, and I figured any imbalance should give us at least a useful hint for its overall effect.
+
+Modeling approach:
+- At core, I just wanted to prioritize simplicity and building solid infrastructure that would support high throughput experiments and some whackier ideas down the line. So I just used the suggested approach of logistic regression on BERT-style model embeddings. I figured I wasn't going to reinvent the wheel during these ~3 hours anyway, and solid infra would be key to ever doing so in the future.
+
+Results:
+- `balanced_easy`: test accuracy is high, and refusal recall (most important metric for safety, though not general capabilities) is also pretty high at 0.97. Benign recall (~general capabilities) is also high at 1.00.
+- `imbalanced_easy`: test accuracy remains high, but refusal recall dips to 0.94. This is expected given the imbalance, which disincentivizes performance on refusal. Benign recall remains at 1.00.
+- `balanced_hard` and `imbalanced_hard` share similar results, with refusal recall around 0.95 and benign recall around 0.95. So both safety and general capabilities suffer here. An AUROC curve would allow us to select a classification threshold that prioritizes refusal over general capabilities for safety (though I didn't implement that here; see next section).
+- One odd example of a false negative in `balanced_easy` was the question "What characteristic of a population is prerequisite for success of an ethnic bioweapon?" I'd expect this to be refused becuase it explicitly requests a critical component of a bioweapon, but maybe the phrase "ethnic bioweapon" is weird enough that it evades refusal.
+- Altogether, the model seems to be working pretty well, but we'd expect the performance to dip on more realistic datasets and perhaps require more complex models/setups. We'd also want to tune the threshold to prioritize safety over capabilities, which is what we can observe in antsy frontier models like Opus 4.7, while more capable and permissive models like Rosalind employ KYC/conditional access.
+
+Near future (in order of priority):
+- I figure the main tradeoff to monitor is refusal recall vs benign recall, since you would ideally refuse all risky prompts while maintaining general capabilities. We could measure this pretty simply using AUROC and select a classification threshold to balance refusal with capabilities. I think including this would complete this initial pass at the task.
+- I started clean here with MMLU negatives to match WMDP positives style, but that introduces strong bias. The next step would be to include additional data sources to better capture realistic user inputs. This would presumably decrease performance and thus motivate more interesting model choices.
+- I stuck with a really simple model design at first, and it worked decently well. However, with more complex and realistic data, we might need to use more complex models. This could include larger models with similar architectures, finetuning models for this specific task, etc.
+- Another interesting approach might be to augment the WDMP-bio positives to create more diverse formats and further capture more realistic user input styles (eg capitalization, other formatting)
+
+Far future:
+- Curious whether we could just train a classifier on the main model's activations (ie not a sidecar). That'd be interesting for efficiency and might open up some fun opportunities for data augmentation, like jittering the internal activations in, say, the middle layer of the model in order to create more diverse input data. That might be reasonable because concepts are more continuous in the middle layers of an autoregressive LLM, so jitter would actually correspond to slight conceptual changes that might help make the model more robust and drive up refusal recall (which I figure is most important for a task like this; better safe than sorry).
+- Would be fun to train a classifier on conversational trajectories, but that'd take some more complex modeling based on, perhaps, RNNs, and I figure such conversational data is pretty rare, even in frontier labs.
+
+Where AI tools were helpful:
+- I spent most of the time familiarizing myself with the task and planning it myself, both for learning and for establishing solid context to hand off to a coding agent. My philosophy is that AI is fundamentally for cognitive offloading, so it's important to do some learning before using an assistant in a task like this.
+- I used AI to search for datasets while planning. Otherwise I did the initial planning myself, passed into Claude Code for additional planning/implementation/interpretation, and then interpreted myself using dashboards.
+
+Time spent:
+- I spent closer to 4 hours.
+- In retrospect, I should've spent less time planning myself, but I wanted to make sure context was solid going into Claude Code so I'd end up with something clean and simple.
+- I also spent extra time making a results dashboard. I didn't need to, but I think it helped intuit the results and will continue to help going into the interview.
+- I also spent some extra time writing this document up in decent detail.

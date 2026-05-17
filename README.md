@@ -2,7 +2,7 @@
 
 A small, modular binary text classifier that predicts whether a natural-language prompt should be **refused** on biosecurity grounds. Baseline: sentence-transformer embeddings (`all-MiniLM-L6-v2`) + scikit-learn logistic regression, evaluated across four primary dataset variants. Designed so future variants — TF-IDF, fine-tuned encoders, activation probes, trajectory classifiers — slot in without rewriting the harness.
 
-This is a take-home task. The original v1 scaffold plan is at [`plans/001_v1_baseline_scaffold.md`](plans/001_v1_baseline_scaffold.md); the v2 swap to MMLU-only negatives is at [`plans/002_swap_dolly_for_mmlu_non_bio.md`](plans/002_swap_dolly_for_mmlu_non_bio.md). Project conventions live in [`CLAUDE.md`](CLAUDE.md); live progress in [`PROGRESS.md`](PROGRESS.md).
+This is a take-home task. The accompanying write-up is at [`writeup.txt`](writeup.txt) (data choices, modeling approach, results, what's next). The original v1 scaffold plan is at [`plans/001_v1_baseline_scaffold.md`](plans/001_v1_baseline_scaffold.md); the v2 swap to MMLU-only negatives is at [`plans/002_swap_dolly_for_mmlu_non_bio.md`](plans/002_swap_dolly_for_mmlu_non_bio.md). Project conventions live in [`CLAUDE.md`](CLAUDE.md); live progress in [`PROGRESS.md`](PROGRESS.md).
 
 ## Datasets
 
