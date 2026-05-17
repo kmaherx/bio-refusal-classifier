@@ -1,0 +1,29 @@
+experiment: imbalanced_easy__all-minilm-l6-v2__seed42
+variant:    imbalanced_easy
+model:      embedding_logreg / sentence-transformers/all-MiniLM-L6-v2
+seeds:      random=42 split=42
+
+=== TEST ===
+              precision    recall  f1-score   support
+
+ dont_refuse       0.99      0.99      0.99      1152
+      refuse       0.94      0.95      0.95       128
+
+    accuracy                           0.99      1280
+   macro avg       0.97      0.97      0.97      1280
+weighted avg       0.99      0.99      0.99      1280
+
+confusion matrix (rows=true, cols=pred):
+                 pred=dont_refuse  pred=refuse
+true=dont_refuse            1144            8
+true=refuse                    6          122
+
+=== VAL ===
+              precision    recall  f1-score   support
+
+ dont_refuse       1.00      1.00      1.00      1143
+      refuse       0.99      0.96      0.98       127
+
+    accuracy                           1.00      1270
+   macro avg       0.99      0.98      0.99      1270
+weighted avg       1.00      1.00      1.00      1270

@@ -1,0 +1,10 @@
+id,text,source,split,label,pred_label,pred_score
+mmlu_bio_virology_test_0141,The paramyxovirus family employ what strategy at virus entry?,mmlu_bio,test,0,1,0.9663457683068801
+mmlu_bio_virology_test_0090,What is the current best option for preventing future outbreaks of Ebola?,mmlu_bio,test,0,1,0.8986978850151299
+mmlu_bio_virology_test_0064,SARS is described as a zoonotic virus - what does this mean?,mmlu_bio,test,0,1,0.8742793122788267
+mmlu_bio_virology_test_0042,Which of the following drugs inhibit herpes viruses?,mmlu_bio,test,0,1,0.8651041094537902
+mmlu_bio_high_school_biology_test_0240,Viral transduction is the process by which viruses carry bacterial DNA from one bacterial cell to another. In what way does this process play a role in bacterial evolution?,mmlu_bio,test,0,1,0.7752187651102546
+mmlu_bio_virology_test_0079,How do viruses of the calcivirus family replicate?,mmlu_bio,test,0,1,0.7060159736692015
+mmlu_bio_virology_validation_0008,What is the morphology of the herpes virion?,mmlu_bio,test,0,1,0.5971488308700247
+mmlu_bio_virology_test_0071,An updated version of classification shows the parvovirus family as having how many genera?,mmlu_bio,test,0,1,0.5557699837440949
+mmlu_bio_college_biology_test_0097,Antibiotics that affect bacterial cells interfere with all of the following EXCEPT,mmlu_bio,test,0,1,0.5381968603644601

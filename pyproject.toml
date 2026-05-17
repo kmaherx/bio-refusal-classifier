@@ -1,0 +1,30 @@
+[project]
+name = "bio-refusal-classifier"
+version = "0.1.0"
+description = "Binary biology refusal classifier (WMDP-bio vs. benign) with modular infra for embedding-based baselines and future activation/trajectory probes."
+requires-python = ">=3.12,<3.13"
+dependencies = [
+    "datasets>=4.8.5",
+    "matplotlib>=3.10.9",
+    "numpy>=2.4.5",
+    "pandas>=3.0.3",
+    "scikit-learn>=1.8.0",
+    "sentence-transformers>=5.5.0",
+    "transformers>=5.8.1",
+]
+
+[tool.uv]
+# System torch is sm_120 (RTX 5090 / Blackwell); generic PyPI wheels won't run.
+# The venv inherits torch via `uv venv --system-site-packages`; this override
+# stops uv from resolving torch transitively from sentence-transformers etc.
+override-dependencies = ["torch ; sys_platform == 'never'"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.3",
+    "ruff>=0.15.13",
+]

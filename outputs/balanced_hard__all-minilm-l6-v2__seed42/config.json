@@ -1,0 +1,45 @@
+{
+  "classifier_kwargs": {
+    "C": 1.0,
+    "max_iter": 1000,
+    "random_state": 42
+  },
+  "classifier_type": "logistic_regression",
+  "dataset_variant": "balanced_hard",
+  "embedding_batch_size": 64,
+  "embedding_model_name": "sentence-transformers/all-MiniLM-L6-v2",
+  "experiment_name": "balanced_hard__all-minilm-l6-v2__seed42",
+  "global_splits_file": "outputs/splits/global_splits__seed42__fracs0.8-0.1-0.1.json",
+  "model_type": "embedding_logreg",
+  "normalize_embeddings": true,
+  "output_dir": "outputs/balanced_hard__all-minilm-l6-v2__seed42",
+  "pool_sizes": {
+    "dolly": {
+      "test": 1501,
+      "train": 12009,
+      "val": 1501
+    },
+    "mmlu_bio": {
+      "test": 207,
+      "train": 1662,
+      "val": 208
+    },
+    "wmdp": {
+      "test": 128,
+      "train": 1018,
+      "val": 127
+    }
+  },
+  "random_seed": 42,
+  "realized_refuse_fraction": {
+    "test": 0.5,
+    "train": 0.5,
+    "val": 0.5
+  },
+  "split_seed": 42,
+  "splits_dir": "outputs/splits",
+  "test_frac": 0.1,
+  "timestamp": "2026-05-17T18:50:36",
+  "train_frac": 0.8,
+  "val_frac": 0.1
+}

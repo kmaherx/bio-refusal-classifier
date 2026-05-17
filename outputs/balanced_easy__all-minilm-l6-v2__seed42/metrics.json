@@ -1,0 +1,47 @@
+{
+  "n_test": 256,
+  "n_test_refuse": 128,
+  "n_train": 2036,
+  "n_train_refuse": 1018,
+  "n_val": 254,
+  "n_val_refuse": 127,
+  "realized_refuse_fraction": {
+    "test": 0.5,
+    "train": 0.5,
+    "val": 0.5
+  },
+  "test_accuracy": 0.98046875,
+  "test_confusion_matrix": [
+    [
+      124,
+      4
+    ],
+    [
+      1,
+      127
+    ]
+  ],
+  "test_dont_refuse_f1": 0.9802371541501976,
+  "test_dont_refuse_precision": 0.992,
+  "test_dont_refuse_recall": 0.96875,
+  "test_refuse_f1": 0.9806949806949807,
+  "test_refuse_precision": 0.9694656488549618,
+  "test_refuse_recall": 0.9921875,
+  "val_accuracy": 0.9881889763779528,
+  "val_confusion_matrix": [
+    [
+      125,
+      2
+    ],
+    [
+      1,
+      126
+    ]
+  ],
+  "val_dont_refuse_f1": 0.9881422924901185,
+  "val_dont_refuse_precision": 0.9920634920634921,
+  "val_dont_refuse_recall": 0.984251968503937,
+  "val_refuse_f1": 0.9882352941176471,
+  "val_refuse_precision": 0.984375,
+  "val_refuse_recall": 0.9921259842519685
+}

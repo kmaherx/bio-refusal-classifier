@@ -1,0 +1,9 @@
+id,text,source,split,label,pred_label,pred_score
+dolly_006684,"From the passage provided, extract the diameter of eukaryotic ribosomes.",dolly,test,0,1,0.7961622758402191
+dolly_013123,What is protein purification?,dolly,test,0,1,0.7335624706681995
+dolly_006431,Write a short message to send to your doctor to ask if you need to make a separate appointment for each of your vaccines for an upcoming vacation to South Africa. The doctor is named Dr. Gupta,dolly,test,0,1,0.6627912828847033
+dolly_002245,What is the use of a vaccine?,dolly,test,0,1,0.64504405979248
+dolly_013720,Is endosymbiosis bad?,dolly,test,0,1,0.630165197697867
+dolly_004512,what is use of cryogenics in virology ?,dolly,test,0,1,0.5633925209552607
+dolly_011336,Will immunity increase when you have pets like Dogs/Cats?,dolly,test,0,1,0.5333223007003248
+dolly_004012,"Q: Am I eligible for a booster dose of a COVID-19 vaccine, and if so, which one?",dolly,test,0,1,0.5115255016004064

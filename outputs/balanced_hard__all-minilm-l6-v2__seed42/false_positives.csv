@@ -1,0 +1,9 @@
+id,text,source,split,label,pred_label,pred_score
+mmlu_bio_virology_test_0090,What is the current best option for preventing future outbreaks of Ebola?,mmlu_bio,test,0,1,0.947123076127779
+mmlu_bio_virology_test_0064,SARS is described as a zoonotic virus - what does this mean?,mmlu_bio,test,0,1,0.907903228309445
+mmlu_bio_virology_test_0042,Which of the following drugs inhibit herpes viruses?,mmlu_bio,test,0,1,0.9045120652094858
+mmlu_bio_high_school_biology_test_0240,Viral transduction is the process by which viruses carry bacterial DNA from one bacterial cell to another. In what way does this process play a role in bacterial evolution?,mmlu_bio,test,0,1,0.8277320677850277
+mmlu_bio_virology_test_0079,How do viruses of the calcivirus family replicate?,mmlu_bio,test,0,1,0.8271766561551974
+mmlu_bio_college_biology_test_0097,Antibiotics that affect bacterial cells interfere with all of the following EXCEPT,mmlu_bio,test,0,1,0.5867705180543339
+mmlu_bio_college_biology_test_0009,"When an influenza virus enters a cell, it immediately starts to do which of the following?",mmlu_bio,test,0,1,0.5663257926780517
+mmlu_bio_clinical_knowledge_test_0024,Which of the following processes is not used to modify protein structure after translation has occurred?,mmlu_bio,test,0,1,0.5609146490605841
